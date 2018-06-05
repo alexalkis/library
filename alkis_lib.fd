@@ -1,0 +1,7 @@
+##base _AlkisBase
+##bias 30
+##public
+Double(n1)(D0)
+AddThese(n1,n2)(D0/D1)
+Triple(n1)(D0)
+##end
