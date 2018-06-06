@@ -8,7 +8,7 @@ endif
 
 #Try to find the asm includes relative to gcc6
 GCC6PATH := $(shell echo `whereis m68k-amigaos-gcc` | rev | cut -d'/' -f3- | rev |  cut -d' ' -f2-)
-ASMINC =$(GCC6PATH)/m68k-amigaos/sys-include/
+ASMINC = -I$(GCC6PATH)/m68k-amigaos/sys-include/ -I$(GCC6PATH)/m68k-amigaos/ndk-include/
 
 
 GIT_VERSION := $(shell git log -1 --date=short --pretty='format:%cd %h')
@@ -18,7 +18,7 @@ SYNTHVER := $(GIT_VERSION) (Built: $(CURDATE))
 
 CC=m68k-amigaos-gcc
 CFLAGS += -Wall -O3 -fomit-frame-pointer
-ASFLAGS+= -I$(ASMINC) -esc -Fhunk
+ASFLAGS+= $(ASMINC) -esc -Fhunk
 
 debug: tester alkis.library
 #debug: ASFLAGS+= 
