@@ -28,7 +28,7 @@ Oh, near all the targets you'll see a bunch of copys (cp) using a destination pa
 Currently all debuging messages go to serial port.  The interface is kind of the same:
 
 * Assembly, <kbd>DBUG "string with exec's RawDoFmt qualifiers like %ld\n",d0</kbd>
-* C, <kbd>DBUG("string with exec's RawDoFmt qualifiers like %ld\n",d0);</kbd>
+* C, <kbd>DBUG("string with exec's RawDoFmt qualifiers like %ld\n",someLongVariable);</kbd>
 
 
 Copy the following to a file serial.sh, save it, and make it executable ('chmod +x serial.sh')
