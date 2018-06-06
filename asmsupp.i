@@ -21,6 +21,8 @@ CALLSYS MACRO           ; call a library via A6 without having to see _LVO
 XLIB    MACRO           ; define a library reference without the _LVO
         XREF    _LVO\1
         ENDM
+
+        IFD COMMENTIT
 ;
 ; Put a message to the serial port at 9600 baud.  Used as so:
 ;
@@ -50,4 +52,6 @@ msg\@           DC.B    \2
 end\@
                 ENDC
                 ENDM
+                    
+      ENDC
                     
