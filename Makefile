@@ -8,7 +8,14 @@ endif
 
 #Try to find the asm includes relative to gcc6
 GCC6PATH := $(shell echo `whereis m68k-amigaos-gcc` | rev | cut -d'/' -f3- | rev |  cut -d' ' -f2-)
-ASMINC = -I$(GCC6PATH)/m68k-amigaos/sys-include/ -I$(GCC6PATH)/m68k-amigaos/ndk-include/
+ifeq (,$(wildcard $(GCC6PATH)/m68k-amigaos/sys-include/exec/exec.i))
+#$(info "file doesn't exists")
+ASMINC = -I$(GCC6PATH)/m68k-amigaos/ndk-include/
+else
+#$(info "file exists")
+ASMINC = -I$(GCC6PATH)/m68k-amigaos/sys-include/
+endif
+#ASMINC = -I$(GCC6PATH)/m68k-amigaos/sys-include/ -I$(GCC6PATH)/m68k-amigaos/ndk-include/
 
 
 GIT_VERSION := $(shell git log -1 --date=short --pretty='format:%cd %h')
@@ -18,21 +25,24 @@ SYNTHVER := $(GIT_VERSION) (Built: $(CURDATE))
 
 CC=m68k-amigaos-gcc
 CFLAGS += -Wall -O3 -fomit-frame-pointer
-ASFLAGS+= $(ASMINC) -esc -Fhunk
+ASFLAGS+= $(ASMINC) -esc -Fhunk -quiet
+
+OBJS=tester.o
+LOBJS=alkislibrary.o libfunc.o
 
 debug: tester alkis.library
-#debug: ASFLAGS+= 
+debug: OBJS+=  $(GCC6PATH)/m68k-amigaos/ndk/lib/linker_libs/debug.lib
+debug: LOBJS+= $(GCC6PATH)/m68k-amigaos/ndk/lib/linker_libs/debug.lib
 
 release: ASFLAGS+= -DNDEBUG
 release: CFLAGS+= -DNDEBUG
 release: tester alkis.library
 
-OBJS=tester.o
-LOBJS=alkislibrary.o libfunc.o
+
 
 
 tester: $(OBJS)
-	vlink -s -o tester $(OBJS) $(GCC6PATH)/m68k-amigaos/ndk/lib/linker_libs/debug.lib
+	vlink -s -o tester $(OBJS) 
 	@ls -l tester
 	@-cp tester "/media/sf_shared/Amiga1.3/alkis/" 2>>/dev/null || true
 	@-cp tester "/media/sf_shared/AmigaHDa1200/asm/" 2>>/dev/null || true
@@ -43,7 +53,7 @@ tester.o: tester.asm mymacros.i alkis_lib.i
 
 
 alkis.library: $(LOBJS)
-	vlink -s -o alkis.library $(LOBJS) $(GCC6PATH)/m68k-amigaos/ndk/lib/linker_libs/debug.lib
+	vlink -s -o alkis.library $(LOBJS)
 	@ls -l alkis.library
 	@-cp alkis.library "/media/sf_shared/Amiga1.3/alkis/" 2>>/dev/null || true
 	@-cp alkis.library "/media/sf_shared/AmigaHDa1200/asm/" 2>>/dev/null || true
@@ -59,4 +69,4 @@ clean:
 	@rm -rf *.o *~ tester alkis.library TAGS
 
 TAGS:
-	find . $(GCC6PATH)/m68k-amigaos/sys-include/ -type f -iname "*.[ch]" | etags -
+	find . $(GCC6PATH)/m68k-amigaos/sys-include/ $(GCC6PATH)/m68k-amigaos/ndk-include/ -type f -iname "*.[ch]" | etags -

@@ -1,4 +1,7 @@
-	ifnd	NDEBUG
+        IFND MYMACROS_I
+MYMACROS_I SET 1
+
+        ifnd	NDEBUG
         XREF	_kprintf
         endc
         
@@ -59,3 +62,6 @@ PULLSP	SET	(NARG)<<2
 .n2\@
 	endc
 	endm
+
+
+        ENDC ;MYMACROS_I
