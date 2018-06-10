@@ -198,12 +198,14 @@ Open:      ; ( libptr:a6, version:d0 )
 
 Close:      ; ( libptr:a6 )
 
+   DBUG "Closing library, with # of times opened: %d (prior of closing)\n",LIB_OPENCNT(a6)
    ;------ set the return value
    CLEAR   d0
 
    ;------ mark us as having one fewer openers
    subq.w   #1,LIB_OPENCNT(a6)
 
+   
    ;------ see if there is anyone left with us open
    bne.s   1$
 

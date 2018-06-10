@@ -30,13 +30,13 @@ ASFLAGS+= $(ASMINC) -esc -Fhunk -quiet
 OBJS=tester.o
 LOBJS=alkislibrary.o libfunc.o
 
-debug: tester alkis.library
+debug: tester testerc alkis.library
 debug: OBJS+=  $(GCC6PATH)/m68k-amigaos/ndk/lib/linker_libs/debug.lib
 debug: LOBJS+= $(GCC6PATH)/m68k-amigaos/ndk/lib/linker_libs/debug.lib
 
 release: ASFLAGS+= -DNDEBUG
 release: CFLAGS+= -DNDEBUG
-release: tester alkis.library
+release: tester testerc alkis.library
 
 
 
@@ -47,6 +47,7 @@ tester: $(OBJS)
 	@-cp tester "/media/sf_shared/Amiga1.3/alkis/" 2>>/dev/null || true
 	@-cp tester "/media/sf_shared/AmigaHDa1200/asm/" 2>>/dev/null || true
 	@-cp tester "/home/alex/Documents/FS-UAE/Hard Drives/13hd/t/" 2>>/dev/null || true
+	@-cp tester "/home/alex/Documents/FS-UAE/Hard Drives/AmigaHD/t/asm/" 2>>/dev/null || true
 
 tester.o: tester.asm mymacros.i alkis_lib.i
 	$(AS) $(ASFLAGS) tester.asm -o tester.o
@@ -58,6 +59,7 @@ alkis.library: $(LOBJS)
 	@-cp alkis.library "/media/sf_shared/Amiga1.3/alkis/" 2>>/dev/null || true
 	@-cp alkis.library "/media/sf_shared/AmigaHDa1200/asm/" 2>>/dev/null || true
 	@-cp alkis.library "/home/alex/Documents/FS-UAE/Hard Drives/13hd/t/" 2>>/dev/null || true
+	@-cp alkis.library "/home/alex/Documents/FS-UAE/Hard Drives/AmigaHD/t/asm/" 2>>/dev/null || true
 
 alkislibrary.o: alkislibrary.asm mymacros.i
 	$(AS) $(ASFLAGS) alkislibrary.asm -o alkislibrary.o
@@ -65,8 +67,16 @@ alkislibrary.o: alkislibrary.asm mymacros.i
 libfunc.o: libfunc.c
 	$(CC) $(CFLAGS) -c libfunc.c -o libfunc.o
 
+testerc: testerc.c inline.h
+	$(CC) -noixemul $(CFLAGS) -o testerc testerc.c
+	@ls -l testerc
+	@-cp testerc "/home/alex/Documents/FS-UAE/Hard Drives/AmigaHD/t/asm/" 2>>/dev/null || true
+
+inline.h: alkis_lib.sfd
+	sfdc --mode=macros alkis_lib.sfd >inline.h
+
 clean:
-	@rm -rf *.o *~ tester alkis.library TAGS
+	@rm -rf *.o *~ tester alkis.library TAGS inline.h testerc
 
 TAGS:
 	find . $(GCC6PATH)/m68k-amigaos/sys-include/ $(GCC6PATH)/m68k-amigaos/ndk-include/ -type f -iname "*.[ch]" | etags -
