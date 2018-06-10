@@ -68,8 +68,9 @@ libfunc.o: libfunc.c
 	$(CC) $(CFLAGS) -c libfunc.c -o libfunc.o
 
 testerc: testerc.c inline.h
-	$(CC) -noixemul $(CFLAGS) -o testerc testerc.c
+	$(CC) -noixemul $(CFLAGS) -o testerc testerc.c -ldebug
 	@ls -l testerc
+	@-cp testerc "/home/alex/Documents/FS-UAE/Hard Drives/13hd/t/" 2>>/dev/null || true
 	@-cp testerc "/home/alex/Documents/FS-UAE/Hard Drives/AmigaHD/t/asm/" 2>>/dev/null || true
 
 inline.h: alkis_lib.sfd
